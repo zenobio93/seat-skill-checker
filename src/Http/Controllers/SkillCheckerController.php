@@ -153,6 +153,21 @@ class SkillCheckerController extends Controller
             }
         }
 
+        // Sort grouped results by main character name, then sort characters within each group by character name
+        $sortedGroupedResults = array_values($groupedResults);
+        
+        // Sort by main character name
+        usort($sortedGroupedResults, function($a, $b) {
+            return strcasecmp($a['main_character']['name'], $b['main_character']['name']);
+        });
+        
+        // Sort characters within each group by character name
+        foreach ($sortedGroupedResults as &$group) {
+            usort($group['characters'], function($a, $b) {
+                return strcasecmp($a['character']['name'], $b['character']['name']);
+            });
+        }
+
         return response()->json([
             'results_meta' => [
                 'type' => 'squad',
@@ -163,7 +178,7 @@ class SkillCheckerController extends Controller
                 'id' => $skillplan->id,
                 'name' => $skillplan->name,
             ],
-            'grouped_characters' => array_values($groupedResults),
+            'grouped_characters' => $sortedGroupedResults,
             'summary' => $this->calculateSummary($allResults),
         ]);
     }
@@ -222,6 +237,21 @@ class SkillCheckerController extends Controller
             $allResults[] = $characterData; // For summary calculation
         }
 
+        // Sort grouped results by main character name, then sort characters within each group by character name
+        $sortedGroupedResults = array_values($groupedResults);
+        
+        // Sort by main character name
+        usort($sortedGroupedResults, function($a, $b) {
+            return strcasecmp($a['main_character']['name'], $b['main_character']['name']);
+        });
+        
+        // Sort characters within each group by character name
+        foreach ($sortedGroupedResults as &$group) {
+            usort($group['characters'], function($a, $b) {
+                return strcasecmp($a['character']['name'], $b['character']['name']);
+            });
+        }
+
         return response()->json([
             'results_meta' => [
                 'type' => 'corporation',
@@ -232,7 +262,7 @@ class SkillCheckerController extends Controller
                 'id' => $skillplan->id,
                 'name' => $skillplan->name,
             ],
-            'grouped_characters' => array_values($groupedResults),
+            'grouped_characters' => $sortedGroupedResults,
             'summary' => $this->calculateSummary($allResults),
         ]);
     }
