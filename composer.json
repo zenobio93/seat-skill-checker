@@ -1,0 +1,33 @@
+{
+  "name": "zenobio93/seat-skill-checker",
+  "description": "SeAT - Skill Checker for managing skill lists and checking character skills",
+  "type": "seat-plugin",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Zenobio93",
+      "email": "development@hellmund.eu"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Zenobio93\\Seat\\SkillChecker\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Zenobio93\\Seat\\SkillChecker\\SkillCheckerServiceProvider"
+      ]
+    }
+  },
+  "require": {
+    "php": "^8.3",
+    "eveseat/services": "^5.0",
+    "eveseat/eveapi": "^5.0",
+    "eveseat/web": "^5.0",
+    "eveseat/api": "^5.0"
+  }
+}
