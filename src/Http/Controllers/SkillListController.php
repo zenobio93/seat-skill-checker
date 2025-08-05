@@ -54,9 +54,13 @@ class SkillListController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'priority' => 'required|integer|min:1',
+            'is_required' => 'boolean',
             'skills' => 'required|array|min:1',
             'skills.*.skill_id' => 'required|integer|exists:invTypes,typeID',
             'skills.*.required_level' => 'required|integer|min:1|max:5',
+            'skills.*.priority' => 'required|integer|min:1',
+            'skills.*.is_required' => 'required|boolean',
         ]);
 
         // Check for duplicate skills in the request
@@ -70,6 +74,8 @@ class SkillListController extends Controller
         $skillList = SkillList::create([
             'name' => $request->name,
             'description' => $request->description,
+            'priority' => $request->priority,
+            'is_required' => $request->boolean('is_required'),
             'created_by' => auth()->user()->id,
         ]);
 
@@ -78,6 +84,8 @@ class SkillListController extends Controller
                 'skill_list_id' => $skillList->id,
                 'skill_id' => $skill['skill_id'],
                 'required_level' => $skill['required_level'],
+                'priority' => $skill['priority'],
+                'is_required' => $skill['is_required'],
             ]);
         }
 
@@ -131,9 +139,13 @@ class SkillListController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'priority' => 'required|integer|min:1',
+            'is_required' => 'boolean',
             'skills' => 'required|array|min:1',
             'skills.*.skill_id' => 'required|integer|exists:invTypes,typeID',
             'skills.*.required_level' => 'required|integer|min:1|max:5',
+            'skills.*.priority' => 'required|integer|min:1',
+            'skills.*.is_required' => 'required|boolean',
         ]);
 
         // Check for duplicate skills in the request
@@ -147,6 +159,8 @@ class SkillListController extends Controller
         $skillList->update([
             'name' => $request->name,
             'description' => $request->description,
+            'priority' => $request->priority,
+            'is_required' => $request->boolean('is_required'),
         ]);
 
         // Remove existing requirements and add new ones
@@ -157,6 +171,8 @@ class SkillListController extends Controller
                 'skill_list_id' => $skillList->id,
                 'skill_id' => $skill['skill_id'],
                 'required_level' => $skill['required_level'],
+                'priority' => $skill['priority'],
+                'is_required' => $skill['is_required'],
             ]);
         }
 

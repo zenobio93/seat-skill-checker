@@ -376,9 +376,15 @@ $(document).ready(function() {
                     `;
                     
                     results.requirements.forEach(function(req) {
+                        const rowClass = req.met ? 'table-success' : (req.is_required ? 'table-danger' : 'table-warning');
+                        const priorityBadge = req.priority !== undefined ? `<span class="badge badge-secondary mr-1">${req.priority + 1}</span>` : '';
+                        const requiredBadge = req.is_required ? '<span class="badge badge-warning mr-1">Required</span>' : '<span class="badge badge-info mr-1">Optional</span>';
+                        
                         html += `
-                            <tr class="${req.met ? 'table-success' : 'table-warning'}">
-                                <td>${req.skill_name}</td>
+                            <tr class="${rowClass}">
+                                <td>
+                                    ${priorityBadge}${requiredBadge}${req.skill_name}
+                                </td>
                                 <td>${req.required_level}</td>
                                 <td>${req.character_level}</td>
                                 <td>

@@ -26,6 +26,8 @@ class SkillList extends Model
         'name',
         'description',
         'created_by',
+        'priority',
+        'is_required',
     ];
 
     /**
@@ -34,6 +36,8 @@ class SkillList extends Model
      * @var array
      */
     protected $casts = [
+        'priority' => 'integer',
+        'is_required' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -66,13 +70,17 @@ class SkillList extends Model
      */
     public function checkCharacterSkills(int $character_id): array
     {
-        $requirements = $this->requirements()->with('skill')->get();
+        $requirements = $this->requirements()->with('skill')->orderByPriority()->get();
         $characterSkills = CharacterSkill::where('character_id', $character_id)
             ->pluck('trained_skill_level', 'skill_id');
 
         $results = [];
         $totalMet = 0;
         $totalRequired = $requirements->count();
+        $requiredMet = 0;
+        $requiredTotal = $requirements->where('is_required', true)->count();
+        $optionalMet = 0;
+        $optionalTotal = $requirements->where('is_required', false)->count();
 
         foreach ($requirements as $requirement) {
             $characterLevel = $characterSkills->get($requirement->skill_id, 0);
@@ -80,6 +88,11 @@ class SkillList extends Model
             
             if ($met) {
                 $totalMet++;
+                if ($requirement->is_required) {
+                    $requiredMet++;
+                } else {
+                    $optionalMet++;
+                }
             }
 
             $results[] = [
@@ -88,6 +101,8 @@ class SkillList extends Model
                 'required_level' => $requirement->required_level,
                 'character_level' => $characterLevel,
                 'met' => $met,
+                'is_required' => $requirement->is_required,
+                'priority' => $requirement->priority,
             ];
         }
 
@@ -95,8 +110,15 @@ class SkillList extends Model
             'requirements' => $results,
             'total_met' => $totalMet,
             'total_required' => $totalRequired,
+            'required_met' => $requiredMet,
+            'required_total' => $requiredTotal,
+            'optional_met' => $optionalMet,
+            'optional_total' => $optionalTotal,
             'percentage' => $totalRequired > 0 ? round(($totalMet / $totalRequired) * 100, 2) : 100,
+            'required_percentage' => $requiredTotal > 0 ? round(($requiredMet / $requiredTotal) * 100, 2) : 100,
+            'optional_percentage' => $optionalTotal > 0 ? round(($optionalMet / $optionalTotal) * 100, 2) : 100,
             'all_met' => $totalMet === $totalRequired,
+            'all_required_met' => $requiredMet === $requiredTotal,
         ];
     }
 }

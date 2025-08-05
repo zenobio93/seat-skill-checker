@@ -35,10 +35,20 @@
                   @if($results)
                     <tr class="{{ $results['all_met'] ? 'table-success' : 'table-warning' }}">
                       <td>
-                        <strong>{{ $skillList->name }}</strong>
-                        @if($skillList->description)
-                          <br><small class="text-muted">{{ Str::limit($skillList->description, 50) }}</small>
-                        @endif
+                        <div class="d-flex align-items-center">
+                          <span class="badge badge-secondary mr-2">{{ $skillList->priority }}</span>
+                          @if($skillList->is_required)
+                            <span class="badge badge-warning mr-2">{{ trans('skillchecker::skillchecker.required') }}</span>
+                          @else
+                            <span class="badge badge-info mr-2">{{ trans('skillchecker::skillchecker.optional') }}</span>
+                          @endif
+                          <div>
+                            <strong>{{ $skillList->name }}</strong>
+                            @if($skillList->description)
+                              <br><small class="text-muted">{{ Str::limit($skillList->description, 50) }}</small>
+                            @endif
+                          </div>
+                        </div>
                       </td>
                       <td>
                         <div class="progress">
@@ -94,7 +104,21 @@
                                 <tbody>
                                   @foreach($results['requirements'] as $requirement)
                                     <tr class="{{ $requirement['met'] ? 'table-success' : 'table-danger' }}">
-                                      <td>{{ $requirement['skill_name'] }}</td>
+                                      <td>
+                                        <div class="d-flex align-items-center">
+                                          @if(isset($requirement['priority']))
+                                            <span class="badge badge-secondary mr-2">{{ $requirement['priority'] + 1 }}</span>
+                                          @endif
+                                          @if(isset($requirement['is_required']))
+                                            @if($requirement['is_required'])
+                                              <span class="badge badge-warning mr-2">{{ trans('skillchecker::skillchecker.required') }}</span>
+                                            @else
+                                              <span class="badge badge-info mr-2">{{ trans('skillchecker::skillchecker.optional') }}</span>
+                                            @endif
+                                          @endif
+                                          <strong>{{ $requirement['skill_name'] }}</strong>
+                                        </div>
+                                      </td>
                                       <td>
                                         <span class="badge badge-primary">
                                           {{ trans('skillchecker::skillchecker.level') }} {{ $requirement['required_level'] }}

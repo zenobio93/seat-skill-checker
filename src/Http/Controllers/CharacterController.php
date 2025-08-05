@@ -14,7 +14,8 @@ class CharacterController extends Controller
 {
     public function skillCheck(CharacterInfo $character): Factory|View
     {
-        $skillLists = SkillList::with('requirements')->orderBy('name')->get();
+        // Order by priority (1 = highest priority, 2 = second highest, etc.) then by name
+        $skillLists = SkillList::with('requirements')->orderBy('priority')->orderBy('name')->get();
 
         $skillCheckResults = [];
         foreach ($skillLists as $skillList) {

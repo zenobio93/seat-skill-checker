@@ -24,6 +24,8 @@ class SkillListRequirement extends Model
         'skill_list_id',
         'skill_id',
         'required_level',
+        'priority',
+        'is_required',
     ];
 
     /**
@@ -35,6 +37,8 @@ class SkillListRequirement extends Model
         'skill_list_id' => 'integer',
         'skill_id' => 'integer',
         'required_level' => 'integer',
+        'priority' => 'integer',
+        'is_required' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -91,5 +95,29 @@ class SkillListRequirement extends Model
     public function getSkillNameAttribute(): string
     {
         return $this->skill->typeName ?? 'Unknown Skill';
+    }
+
+    /**
+     * Scope to order by priority.
+     * Priority 1 is the highest priority, 2 is second highest, etc.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOrderByPriority($query)
+    {
+        return $query->orderBy('priority')->orderBy('id');
+    }
+
+    /**
+     * Scope to filter by required status.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool $required
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeRequired($query, bool $required = true)
+    {
+        return $query->where('is_required', $required);
     }
 }

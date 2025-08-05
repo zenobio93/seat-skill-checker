@@ -63,10 +63,18 @@
             </tr>
           </thead>
           <tbody>
-            @foreach($skillList->requirements as $requirement)
+            @foreach($skillList->requirements->sortBy('priority') as $requirement)
               <tr>
                 <td>
-                  <strong>{{ $requirement->skill->typeName ?? 'Unknown Skill' }}</strong>
+                  <div class="d-flex align-items-center">
+                    <span class="badge badge-secondary mr-2">{{ $loop->iteration }}</span>
+                    <strong>{{ $requirement->skill->typeName ?? 'Unknown Skill' }}</strong>
+                    @if(!($requirement->is_required ?? true))
+                      <span class="badge badge-info ml-2">{{ trans('skillchecker::skillchecker.optional') }}</span>
+                    @else
+                      <span class="badge badge-warning ml-2">{{ trans('skillchecker::skillchecker.required') }}</span>
+                    @endif
+                  </div>
                 </td>
                 <td>
                   <span class="badge badge-primary">

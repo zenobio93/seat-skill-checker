@@ -26,6 +26,33 @@
             @enderror
           </div>
         </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="priority">{{ trans('skillchecker::skillchecker.priority') }}</label>
+            <input type="number" class="form-control @error('priority') is-invalid @enderror" 
+                   id="priority" name="priority" value="{{ old('priority', $skillList->priority ?? 1) }}" min="1">
+            @error('priority')
+              <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label for="is_required">{{ trans('skillchecker::skillchecker.required') }}</label>
+            <div class="form-check form-switch mt-2">
+              <input type="hidden" name="is_required" value="0">
+              <input class="form-check-input @error('is_required') is-invalid @enderror" 
+                     type="checkbox" id="is_required" name="is_required" value="1" 
+                     {{ old('is_required', $skillList->is_required) ? 'checked' : '' }}>
+              <label class="form-check-label" for="is_required">
+                {{ trans('skillchecker::skillchecker.mark_as_required') }}
+              </label>
+              @error('is_required')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -97,14 +124,43 @@
 
 @endsection
 
+@push('head')
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/ui-lightness/jquery-ui.css">
+<style>
+.skill-row .card {
+    transition: all 0.3s ease;
+}
+.skill-row .card.border-warning {
+    border-left: 4px solid #ffc107 !important;
+}
+.skill-row .card.border-info {
+    border-left: 4px solid #17a2b8 !important;
+}
+.drag-handle:hover {
+    color: #007bff !important;
+}
+.ui-sortable-helper {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: rotate(2deg);
+}
+.ui-sortable-placeholder {
+    border: 2px dashed #007bff;
+    background: rgba(0,123,255,0.1);
+    height: 80px;
+    margin: 10px 0;
+}
+</style>
+@endpush
+
 @push('javascript')
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script>
 $(document).ready(function() {
     let skillIndex = 0;
     
     // Load existing skills
     @foreach($skillList->requirements as $requirement)
-        addSkillRow({{ $requirement->skill_id }}, '{{ $requirement->skill->typeName ?? "Unknown Skill" }}', {{ $requirement->required_level }});
+        addSkillRow({{ $requirement->skill_id }}, '{{ $requirement->skill->typeName ?? "Unknown Skill" }}', {{ $requirement->required_level }}, {{ $requirement->priority ?? 0 }}, {{ $requirement->is_required ? 'true' : 'false' }});
     @endforeach
     
     // Initialize modal states after loading existing skills
@@ -140,27 +196,53 @@ $(document).ready(function() {
         });
     });
     
-    function addSkillRow(skillId, skillName, level = 1) {
+    function addSkillRow(skillId, skillName, level = 1, priority = null, isRequired = true) {
+        if (priority === null) {
+            priority = $('.skill-row').length + 1;
+        }
+        
         const html = `
-            <div class="skill-row mb-2" data-index="${skillIndex}">
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="hidden" name="skills[${skillIndex}][skill_id]" value="${skillId}">
-                        <input type="text" class="form-control" value="${skillName}" readonly>
-                    </div>
-                    <div class="col-md-3">
-                        <select name="skills[${skillIndex}][required_level]" class="form-control" required>
-                            <option value="1" ${level == 1 ? 'selected' : ''}>Level I</option>
-                            <option value="2" ${level == 2 ? 'selected' : ''}>Level II</option>
-                            <option value="3" ${level == 3 ? 'selected' : ''}>Level III</option>
-                            <option value="4" ${level == 4 ? 'selected' : ''}>Level IV</option>
-                            <option value="5" ${level == 5 ? 'selected' : ''}>Level V</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button type="button" class="btn btn-danger btn-sm remove-skill">
-                            <i class="fas fa-trash"></i> {{ trans('skillchecker::skillchecker.remove_skill') }}
-                        </button>
+            <div class="skill-row mb-2" data-index="${skillIndex}" data-skill-id="${skillId}">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-1">
+                                <div class="drag-handle" style="cursor: move;">
+                                    <i class="fas fa-grip-vertical text-muted"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="hidden" name="skills[${skillIndex}][skill_id]" value="${skillId}">
+                                <input type="hidden" name="skills[${skillIndex}][priority]" value="${priority}" class="priority-input">
+                                <input type="text" class="form-control" value="${skillName}" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <select name="skills[${skillIndex}][required_level]" class="form-control" required>
+                                    <option value="1" ${level == 1 ? 'selected' : ''}>Level I</option>
+                                    <option value="2" ${level == 2 ? 'selected' : ''}>Level II</option>
+                                    <option value="3" ${level == 3 ? 'selected' : ''}>Level III</option>
+                                    <option value="4" ${level == 4 ? 'selected' : ''}>Level IV</option>
+                                    <option value="5" ${level == 5 ? 'selected' : ''}>Level V</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-check form-switch">
+                                    <input type="hidden" name="skills[${skillIndex}][is_required]" value="0">
+                                    <input class="form-check-input" type="checkbox" name="skills[${skillIndex}][is_required]" value="1" ${isRequired ? 'checked' : ''}>
+                                    <label class="form-check-label">
+                                        <span class="required-label">${isRequired ? 'Required' : 'Optional'}</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="badge badge-secondary priority-badge">Priority: ${priority}</span>
+                            </div>
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger btn-sm remove-skill">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -168,13 +250,44 @@ $(document).ready(function() {
         
         $('#skills-container').append(html);
         skillIndex++;
+        updatePriorities();
     }
+    
+    // Initialize sortable functionality
+    $('#skills-container').sortable({
+        handle: '.drag-handle',
+        items: '.skill-row',
+        update: function(event, ui) {
+            updatePriorities();
+        }
+    });
     
     // Remove skill
     $(document).on('click', '.remove-skill', function() {
         $(this).closest('.skill-row').remove();
+        updatePriorities();
         updateModalSkillStates();
     });
+    
+    // Handle required/optional toggle
+    $(document).on('change', 'input[type="checkbox"][name*="[is_required]"]', function() {
+        const label = $(this).siblings('label').find('.required-label');
+        if ($(this).is(':checked')) {
+            label.text('Required');
+            $(this).closest('.skill-row').find('.card').removeClass('border-info').addClass('border-warning');
+        } else {
+            label.text('Optional');
+            $(this).closest('.skill-row').find('.card').removeClass('border-warning').addClass('border-info');
+        }
+    });
+    
+    // Update priorities based on current order
+    function updatePriorities() {
+        $('.skill-row').each(function(index) {
+            $(this).find('.priority-input').val(index + 1);
+            $(this).find('.priority-badge').text('Priority: ' + (index + 1));
+        });
+    }
     
     // Update modal skill states (disable already added skills)
     function updateModalSkillStates() {

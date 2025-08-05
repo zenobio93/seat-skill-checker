@@ -28,6 +28,16 @@ class SkillListDataTable extends DataTable
             ->editColumn('skills_count', function ($row) {
                 return '<span class="badge badge-info">' . $row->requirements->count() . '</span>';
             })
+            ->editColumn('priority', function ($row) {
+                return '<span class="badge badge-secondary">' . $row->priority . '</span>';
+            })
+            ->editColumn('is_required', function ($row) {
+                if ($row->is_required) {
+                    return '<span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i> ' . trans('skillchecker::skillchecker.required') . '</span>';
+                } else {
+                    return '<span class="badge badge-info"><i class="fas fa-info-circle"></i> ' . trans('skillchecker::skillchecker.optional') . '</span>';
+                }
+            })
             ->editColumn('created_by', function ($row) {
                 return $row->creator ? $row->creator->name : 'Unknown';
             })
@@ -58,7 +68,7 @@ class SkillListDataTable extends DataTable
                 
                 return $actions;
             })
-            ->rawColumns(['name', 'skills_count', 'action'])
+            ->rawColumns(['name', 'skills_count', 'priority', 'is_required', 'action'])
             ->toJson();
     }
 
@@ -78,7 +88,9 @@ class SkillListDataTable extends DataTable
     public function html(): \Yajra\DataTables\Html\Builder
     {
         return $this->builder()
-            ->columns($this->getColumns());
+            ->columns($this->getColumns())
+            ->orderBy(3, 'asc') // Order by priority desc (index 3)
+        ;
     }
 
     /**
@@ -102,6 +114,18 @@ class SkillListDataTable extends DataTable
             [
                 'data' => 'skills_count',
                 'title' => trans('skillchecker::skillchecker.skills'),
+                'orderable' => true,
+                'searchable' => false,
+            ],
+            [
+                'data' => 'priority',
+                'title' => trans('skillchecker::skillchecker.priority'),
+                'orderable' => true,
+                'searchable' => false,
+            ],
+            [
+                'data' => 'is_required',
+                'title' => trans('skillchecker::skillchecker.required'),
                 'orderable' => true,
                 'searchable' => false,
             ],

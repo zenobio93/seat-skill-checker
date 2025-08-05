@@ -61,6 +61,12 @@ return [
     'all_requirements_met' => 'All Requirements Met',
     'missing_skills' => 'Missing Skills',
     'character_skills' => 'Skillcheck',
+    'required' => 'Required',
+    'optional' => 'Optional',
+    'priority' => 'Priority',
+    'mark_as_required' => 'Mark as Required',
+    'required_skills' => 'Required Skills',
+    'optional_skills' => 'Optional Skills',
     
     // Buttons
     'view' => 'View',
