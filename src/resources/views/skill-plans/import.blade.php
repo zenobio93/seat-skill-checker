@@ -76,7 +76,7 @@
 
       <!-- Format Examples -->
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="card bg-light">
             <div class="card-header">
               <h6 class="mb-0">{{ trans('skillchecker::skillchecker.line_by_line_example') }}</h6>
@@ -91,7 +91,7 @@ Power Grid Management 3</pre>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div class="card bg-light">
             <div class="card-header">
               <h6 class="mb-0">{{ trans('skillchecker::skillchecker.json_example') }}</h6>
@@ -103,6 +103,20 @@ Power Grid Management 3</pre>
   "CPU Management": "4",
   "Spaceship Command": "3"
 }</pre>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card bg-light">
+            <div class="card-header">
+              <h6 class="mb-0">{{ trans('skillchecker::skillchecker.localized_example') }}</h6>
+            </div>
+            <div class="card-body">
+              <pre class="mb-0">&lt;localized hint="Gunnery"&gt;Gunnery&lt;/localized&gt; 1
+&lt;localized hint="Gunnery"&gt;Gunnery&lt;/localized&gt; 2
+&lt;localized hint="Motion Prediction"&gt;Motion Prediction&lt;/localized&gt; 1
+&lt;localized hint="Rapid Firing"&gt;Rapid Firing&lt;/localized&gt; 1
+&lt;localized hint="Gunnery"&gt;Gunnery*&lt;/localized&gt; 5</pre>
             </div>
           </div>
         </div>

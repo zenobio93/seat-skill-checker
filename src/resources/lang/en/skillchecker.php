@@ -76,6 +76,7 @@ return array(
     'import_data_placeholder' => 'Paste your skill data here...',
     'line_by_line_example' => 'Line by Line Example',
     'json_example' => 'JSON Example',
+    'localized_example' => 'Localized XML Example',
     'import' => 'Import',
     'update_mode' => 'Update Mode',
     'select_update_mode' => 'Select Update Mode',

@@ -260,6 +260,8 @@ class SkillPlanController extends Controller
             
             if ($detectedFormat === 'json') {
                 $skills = $this->parseJsonFormat($request->import_data);
+            } elseif ($detectedFormat === 'localized') {
+                $skills = $this->parseLocalizedFormat($request->import_data);
             } else {
                 $skills = $this->parseLineByLineFormat($request->import_data);
             }
@@ -370,6 +372,36 @@ class SkillPlanController extends Controller
     }
 
     /**
+     * Parse localized XML format (e.g., '<localized hint="Gunnery">Gunnery</localized> 1')
+     *
+     * @param string $data
+     * @return array
+     */
+    private function parseLocalizedFormat(string $data): array
+    {
+        $lines = array_filter(array_map('trim', explode("\n", $data)));
+        $skills = [];
+
+        foreach ($lines as $line) {
+            // Match pattern like '<localized hint="Gunnery">Gunnery</localized> 1'
+            // or '<localized hint="Gunnery">Gunnery*</localized> 5'
+            if (preg_match('/<localized hint="([^"]+)">([^<]*\*?)<\/localized>\s+(\d+)/', $line, $matches)) {
+                $skillName = trim($matches[1]); // Use hint attribute as skill name
+                $level = (int) $matches[3];
+                
+                if ($level >= 1 && $level <= 5) {
+                    // Always use the highest level for each skill
+                    if (!isset($skills[$skillName]) || $skills[$skillName] < $level) {
+                        $skills[$skillName] = $level;
+                    }
+                }
+            }
+        }
+
+        return $skills;
+    }
+
+    /**
      * Show the import form for updating an existing skill plan.
      *
      * @param SkillPlan $skillplan
@@ -400,6 +432,8 @@ class SkillPlanController extends Controller
             
             if ($detectedFormat === 'json') {
                 $skills = $this->parseJsonFormat($request->import_data);
+            } elseif ($detectedFormat === 'localized') {
+                $skills = $this->parseLocalizedFormat($request->import_data);
             } else {
                 $skills = $this->parseLineByLineFormat($request->import_data);
             }
@@ -498,6 +532,11 @@ class SkillPlanController extends Controller
             if (json_last_error() === JSON_ERROR_NONE) {
                 return 'json';
             }
+        }
+        
+        // Check if it contains localized XML format
+        if (strpos($trimmedData, '<localized hint=') !== false) {
+            return 'localized';
         }
         
         // Default to line-by-line format
