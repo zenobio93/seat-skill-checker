@@ -56,11 +56,11 @@
             <!-- Skill List Selection -->
             <div class="col-md-3">
               <div class="form-group">
-                <label for="skill-list-select">{{ trans('skillchecker::skillchecker.select_skill_list') }}</label>
-                <select class="form-control" id="skill-list-select" name="skill_list_id" required>
-                  <option value="">{{ trans('skillchecker::skillchecker.select_skill_list') }}</option>
-                  @foreach($skillLists as $skillList)
-                    <option value="{{ $skillList->id }}">{{ $skillList->name }}</option>
+                <label for="skill-list-select">{{ trans('skillchecker::skillchecker.select_skill_plan') }}</label>
+                <select class="form-control" id="skill-list-select" name="skill_plan_id" required>
+                  <option value="">{{ trans('skillchecker::skillchecker.select_skill_plan') }}</option>
+                  @foreach($skillplans as $skillplan)
+                    <option value="{{ $skillplan->id }}">{{ $skillplan->name }}</option>
                   @endforeach
                 </select>
               </div>
@@ -120,21 +120,21 @@ $(document).ready(function() {
         const userId = $('#user-select').val();
         const squadId = $('#squad-select').val();
         const corporationId = $('#corporation-select').val();
-        const skillListId = $('#skill-list-select').val();
+        const skillplanId = $('#skill-list-select').val();
         
         // Validate that a skill list is selected
-        if (!skillListId) {
+        if (!skillplanId) {
             alert('Please select a skill list.');
             return;
         }
         
         // Determine which filter is selected and call appropriate function
         if (userId) {
-            checkUser(userId, skillListId);
+            checkUser(userId, skillplanId);
         } else if (squadId) {
-            checkSquad(squadId, skillListId);
+            checkSquad(squadId, skillplanId);
         } else if (corporationId) {
-            checkCorporation(corporationId, skillListId);
+            checkCorporation(corporationId, skillplanId);
         } else {
             alert('Please select a user, squad, or corporation to check.');
             return;
@@ -146,7 +146,7 @@ $(document).ready(function() {
         $('#results-section').hide();
     });
     
-    function checkUser(userId, skillListId) {
+    function checkUser(userId, skillplanId) {
         showLoading();
         
         $.ajax({
@@ -154,7 +154,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 user_id: userId,
-                skill_list_id: skillListId,
+                skill_plan_id: skillplanId,
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
@@ -167,7 +167,7 @@ $(document).ready(function() {
         });
     }
     
-    function checkSquad(squadId, skillListId) {
+    function checkSquad(squadId, skillplanId) {
         showLoading();
         
         $.ajax({
@@ -175,7 +175,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 squad_id: squadId,
-                skill_list_id: skillListId,
+                skill_plan_id: skillplanId,
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
@@ -188,7 +188,7 @@ $(document).ready(function() {
         });
     }
     
-    function checkCorporation(corporationId, skillListId) {
+    function checkCorporation(corporationId, skillplanId) {
         showLoading();
         
         $.ajax({
@@ -196,7 +196,7 @@ $(document).ready(function() {
             method: 'POST',
             data: {
                 corporation_id: corporationId,
-                skill_list_id: skillListId,
+                skill_plan_id: skillplanId,
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
@@ -212,7 +212,7 @@ $(document).ready(function() {
     function displayCharacterResults(data) {
         const results = data.results;
         let html = `
-            <h4>${data.character.name} - ${data.skill_list.name}</h4>
+            <h4>${data.character.name} - ${data.skill_plan.name}</h4>
             <div class="row mb-3">
                 <div class="col-md-4">
                     <div class="info-box">
@@ -275,7 +275,7 @@ $(document).ready(function() {
     
     function displayResults(data) {
         let html = `
-            <h4>${data.results_meta.name} - ${data.skill_list.name}</h4>
+            <h4>${data.results_meta.name} - ${data.skill_plan.name}</h4>
             <div class="row mb-3">
                 <div class="col-md-3">
                     <div class="info-box">

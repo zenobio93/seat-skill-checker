@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Zenobio93\Seat\SkillChecker\Http\Controllers\SkillListController;
+use Zenobio93\Seat\SkillChecker\Http\Controllers\SkillPlanController;
 use Zenobio93\Seat\SkillChecker\Http\Controllers\SkillCheckerController;
 
 Route::group([
@@ -10,18 +10,18 @@ Route::group([
     'middleware' => ['web', 'auth', 'locale'],
 ], function () {
 
-    // Skill Lists Management Routes
+    // Skill Plans Management Routes
     Route::group([
-        'prefix' => 'skill-lists',
-        'middleware' => 'can:skillchecker.manage_skill_lists',
+        'prefix' => 'skill-plans',
+        'middleware' => 'can:skillchecker.manage_skill_plans',
     ], function () {
-        Route::get('/', [SkillListController::class, 'index'])->name('skillchecker.skill-lists.index');
-        Route::get('/create', [SkillListController::class, 'create'])->name('skillchecker.skill-lists.create');
-        Route::post('/', [SkillListController::class, 'store'])->name('skillchecker.skill-lists.store');
-        Route::get('/{skillList}', [SkillListController::class, 'show'])->name('skillchecker.skill-lists.show');
-        Route::get('/{skillList}/edit', [SkillListController::class, 'edit'])->name('skillchecker.skill-lists.edit');
-        Route::put('/{skillList}', [SkillListController::class, 'update'])->name('skillchecker.skill-lists.update');
-        Route::delete('/{skillList}', [SkillListController::class, 'destroy'])->name('skillchecker.skill-lists.destroy');
+        Route::get('/', [SkillPlanController::class, 'index'])->name('skillchecker.skill-plans.index');
+        Route::get('/create', [SkillPlanController::class, 'create'])->name('skillchecker.skill-plans.create');
+        Route::post('/', [SkillPlanController::class, 'store'])->name('skillchecker.skill-plans.store');
+        Route::get('/{skillplan}', [SkillPlanController::class, 'show'])->name('skillchecker.skill-plans.show');
+        Route::get('/{skillplan}/edit', [SkillPlanController::class, 'edit'])->name('skillchecker.skill-plans.edit');
+        Route::put('/{skillplan}', [SkillPlanController::class, 'update'])->name('skillchecker.skill-plans.update');
+        Route::delete('/{skillplan}', [SkillPlanController::class, 'destroy'])->name('skillchecker.skill-plans.destroy');
     });
 
     // Skill Checker Routes

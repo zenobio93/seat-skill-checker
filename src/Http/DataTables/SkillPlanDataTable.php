@@ -2,13 +2,13 @@
 
 namespace Zenobio93\Seat\SkillChecker\Http\DataTables;
 
-use Zenobio93\Seat\SkillChecker\Models\SkillList;
+use Zenobio93\Seat\SkillChecker\Models\SkillPlan;
 use Yajra\DataTables\Services\DataTable;
 
 /**
- * Class SkillListDataTable.
+ * Class SkillPlanDataTable.
  */
-class SkillListDataTable extends DataTable
+class SkillPlanDataTable extends DataTable
 {
     /**
      * @return \Illuminate\Http\JsonResponse
@@ -48,16 +48,16 @@ class SkillListDataTable extends DataTable
                 $actions = '<div class="btn-group" role="group">';
                 
                 // View button
-                $actions .= '<a href="' . route('skillchecker.skill-lists.show', $row) . '" class="btn btn-sm btn-info" title="' . trans('skillchecker::skillchecker.view') . '">';
+                $actions .= '<a href="' . route('skillchecker.skill-plans.show', $row) . '" class="btn btn-sm btn-info" title="' . trans('skillchecker::skillchecker.view') . '">';
                 $actions .= '<i class="fas fa-eye"></i></a>';
                 
                 // Edit button (with permission check)
-                if (auth()->user()->can('skillchecker.manage_skill_lists')) {
-                    $actions .= '<a href="' . route('skillchecker.skill-lists.edit', $row) . '" class="btn btn-sm btn-warning" title="' . trans('skillchecker::skillchecker.edit') . '">';
+                if (auth()->user()->can('skillchecker.manage_skill_plans')) {
+                    $actions .= '<a href="' . route('skillchecker.skill-plans.edit', $row) . '" class="btn btn-sm btn-warning" title="' . trans('skillchecker::skillchecker.edit') . '">';
                     $actions .= '<i class="fas fa-edit"></i></a>';
                     
                     // Delete button
-                    $actions .= '<form action="' . route('skillchecker.skill-lists.destroy', $row) . '" method="POST" class="d-inline" onsubmit="return confirm(\'' . trans('skillchecker::skillchecker.are_you_sure_delete') . '\')">';
+                    $actions .= '<form action="' . route('skillchecker.skill-plans.destroy', $row) . '" method="POST" class="d-inline" onsubmit="return confirm(\'' . trans('skillchecker::skillchecker.are_you_sure_delete') . '\')">';
                     $actions .= csrf_field();
                     $actions .= method_field('DELETE');
                     $actions .= '<button type="submit" class="btn btn-sm btn-danger" title="' . trans('skillchecker::skillchecker.delete') . '">';
@@ -77,9 +77,9 @@ class SkillListDataTable extends DataTable
      */
     public function query(): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder
     {
-        return SkillList::with('creator')
+        return SkillPlan::with('creator')
             ->withCount('requirements')
-            ->select('skill_lists.*');
+            ->select('skill_plans.*');
     }
 
     /**

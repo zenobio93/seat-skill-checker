@@ -1,16 +1,16 @@
 @extends('web::layouts.grids.12')
 
-@section('title', trans('skillchecker::skillchecker.edit_skill_list'))
-@section('page_header', trans('skillchecker::skillchecker.edit_skill_list'))
+@section('title', trans('skillchecker::skillchecker.edit_skill_plan'))
+@section('page_header', trans('skillchecker::skillchecker.edit_skill_plan'))
 
 @section('full')
 
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">{{ trans('skillchecker::skillchecker.edit_skill_list') }}: {{ $skillList->name }}</h3>
+    <h3 class="card-title">{{ trans('skillchecker::skillchecker.edit_skill_plan') }}: {{ $skillplan->name }}</h3>
   </div>
 
-  <form action="{{ route('skillchecker.skill-lists.update', $skillList) }}" method="POST" id="skill-list-form">
+  <form action="{{ route('skillchecker.skill-plans.update', $skillplan) }}" method="POST" id="skill-list-form">
     @csrf
     @method('PUT')
     
@@ -20,7 +20,7 @@
           <div class="form-group">
             <label for="name">{{ trans('skillchecker::skillchecker.name') }} <span class="text-danger">*</span></label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                   id="name" name="name" value="{{ old('name', $skillList->name) }}" required>
+                   id="name" name="name" value="{{ old('name', $skillplan->name) }}" required>
             @error('name')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -30,7 +30,7 @@
           <div class="form-group">
             <label for="priority">{{ trans('skillchecker::skillchecker.priority') }}</label>
             <input type="number" class="form-control @error('priority') is-invalid @enderror" 
-                   id="priority" name="priority" value="{{ old('priority', $skillList->priority ?? 1) }}" min="1">
+                   id="priority" name="priority" value="{{ old('priority', $skillplan->priority ?? 1) }}" min="1">
             @error('priority')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -43,7 +43,7 @@
               <input type="hidden" name="is_required" value="0">
               <input class="form-check-input @error('is_required') is-invalid @enderror" 
                      type="checkbox" id="is_required" name="is_required" value="1" 
-                     {{ old('is_required', $skillList->is_required) ? 'checked' : '' }}>
+                     {{ old('is_required', $skillplan->is_required) ? 'checked' : '' }}>
               <label class="form-check-label" for="is_required">
                 {{ trans('skillchecker::skillchecker.mark_as_required') }}
               </label>
@@ -58,7 +58,7 @@
       <div class="form-group">
         <label for="description">{{ trans('skillchecker::skillchecker.description') }}</label>
         <textarea class="form-control @error('description') is-invalid @enderror" 
-                  id="description" name="description" rows="3">{{ old('description', $skillList->description) }}</textarea>
+                  id="description" name="description" rows="3">{{ old('description', $skillplan->description) }}</textarea>
         @error('description')
           <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -82,7 +82,7 @@
       <button type="submit" class="btn btn-primary">
         <i class="fas fa-save"></i> {{ trans('skillchecker::skillchecker.save') }}
       </button>
-      <a href="{{ route('skillchecker.skill-lists.show', $skillList) }}" class="btn btn-secondary">
+      <a href="{{ route('skillchecker.skill-plans.show', $skillplan) }}" class="btn btn-secondary">
         <i class="fas fa-times"></i> {{ trans('skillchecker::skillchecker.cancel') }}
       </a>
     </div>
@@ -159,7 +159,7 @@ $(document).ready(function() {
     let skillIndex = 0;
     
     // Load existing skills
-    @foreach($skillList->requirements as $requirement)
+    @foreach($skillplan->requirements as $requirement)
         addSkillRow({{ $requirement->skill_id }}, '{{ $requirement->skill->typeName ?? "Unknown Skill" }}', {{ $requirement->required_level }}, {{ $requirement->priority ?? 0 }}, {{ $requirement->is_required ? 'true' : 'false' }});
     @endforeach
     

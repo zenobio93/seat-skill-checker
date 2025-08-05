@@ -8,20 +8,20 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Web\Http\Controllers\Controller;
-use Zenobio93\Seat\SkillChecker\Models\SkillList;
+use Zenobio93\Seat\SkillChecker\Models\SkillPlan;
 
 class CharacterController extends Controller
 {
     public function skillCheck(CharacterInfo $character): Factory|View
     {
         // Order by priority (1 = highest priority, 2 = second highest, etc.) then by name
-        $skillLists = SkillList::with('requirements')->orderBy('priority')->orderBy('name')->get();
+        $skillplans = SkillPlan::with('requirements')->orderBy('priority')->orderBy('name')->get();
 
         $skillCheckResults = [];
-        foreach ($skillLists as $skillList) {
-            $skillCheckResults[$skillList->id] = $skillList->checkCharacterSkills($character->character_id);
+        foreach ($skillplans as $skillplan) {
+            $skillCheckResults[$skillplan->id] = $skillplan->checkCharacterSkills($character->character_id);
         }
 
-        return view('skillchecker::character.skillcheck', compact('character', 'skillLists', 'skillCheckResults'));
+        return view('skillchecker::character.skillcheck', compact('character', 'skillplans', 'skillCheckResults'));
     }
 }

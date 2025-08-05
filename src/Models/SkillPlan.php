@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Seat\Eveapi\Models\Character\CharacterSkill;
 use Seat\Web\Models\User;
 
-class SkillList extends Model
+class SkillPlan extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'skill_lists';
+    protected $table = 'skill_plans';
 
     /**
      * The attributes that are mass assignable.
@@ -43,7 +43,7 @@ class SkillList extends Model
     ];
 
     /**
-     * Get the user who created this skill list.
+     * Get the user who created this skill plan.
      *
      * @return BelongsTo
      */
@@ -53,17 +53,17 @@ class SkillList extends Model
     }
 
     /**
-     * Get the skill requirements for this skill list.
+     * Get the skill requirements for this skill plan.
      *
      * @return HasMany
      */
     public function requirements(): HasMany
     {
-        return $this->hasMany(SkillListRequirement::class);
+        return $this->hasMany(SkillPlanRequirement::class);
     }
 
     /**
-     * Check if a character meets all requirements in this skill list.
+     * Check if a character meets all requirements in this skill plan.
      *
      * @param int $character_id
      * @return array

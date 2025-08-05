@@ -12,15 +12,15 @@
   </div>
 
   <div class="card-body">
-    @if($skillLists->count() > 0)
+    @if($skillplans->count() > 0)
       <div class="row mb-4">
         <div class="col-12">
-          <h5>{{ trans('skillchecker::skillchecker.skill_list_overview') }}</h5>
+          <h5>{{ trans('skillchecker::skillchecker.skill_plan_overview') }}</h5>
           <div class="table-responsive">
             <table class="table table-striped">
               <thead>
                 <tr>
-                  <th>{{ trans('skillchecker::skillchecker.skill_list') }}</th>
+                  <th>{{ trans('skillchecker::skillchecker.skill_plan') }}</th>
                   <th>{{ trans('skillchecker::skillchecker.completion') }}</th>
                   <th>{{ trans('skillchecker::skillchecker.requirements') }}</th>
                   <th>{{ trans('skillchecker::skillchecker.status') }}</th>
@@ -28,24 +28,24 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach($skillLists as $skillList)
+                @foreach($skillplans as $skillplan)
                   @php
-                    $results = $skillCheckResults[$skillList->id] ?? null;
+                    $results = $skillCheckResults[$skillplan->id] ?? null;
                   @endphp
                   @if($results)
                     <tr class="{{ $results['all_met'] ? 'table-success' : 'table-warning' }}">
                       <td>
                         <div class="d-flex align-items-center">
-                          <span class="badge badge-secondary mr-2">{{ $skillList->priority }}</span>
-                          @if($skillList->is_required)
+                          <span class="badge badge-secondary mr-2">{{ $skillplan->priority }}</span>
+                          @if($skillplan->is_required)
                             <span class="badge badge-warning mr-2">{{ trans('skillchecker::skillchecker.required') }}</span>
                           @else
                             <span class="badge badge-info mr-2">{{ trans('skillchecker::skillchecker.optional') }}</span>
                           @endif
                           <div>
-                            <strong>{{ $skillList->name }}</strong>
-                            @if($skillList->description)
-                              <br><small class="text-muted">{{ Str::limit($skillList->description, 50) }}</small>
+                            <strong>{{ $skillplan->name }}</strong>
+                            @if($skillplan->description)
+                              <br><small class="text-muted">{{ Str::limit($skillplan->description, 50) }}</small>
                             @endif
                           </div>
                         </div>
@@ -81,14 +81,14 @@
                       <td>
                         <button type="button" class="btn btn-sm btn-info" 
                                 data-toggle="collapse" 
-                                data-target="#details-{{ $skillList->id }}">
+                                data-target="#details-{{ $skillplan->id }}">
                           <i class="fas fa-eye"></i> {{ trans('skillchecker::skillchecker.view') }}
                         </button>
                       </td>
                     </tr>
                     <tr>
                       <td colspan="5" class="p-0">
-                        <div class="collapse" id="details-{{ $skillList->id }}">
+                        <div class="collapse" id="details-{{ $skillplan->id }}">
                           <div class="card-body">
                             <h6>{{ trans('skillchecker::skillchecker.skill_requirements') }}</h6>
                             <div class="table-responsive">
@@ -165,8 +165,8 @@
               <i class="fas fa-list"></i>
             </span>
             <div class="info-box-content">
-              <span class="info-box-text">{{ trans('skillchecker::skillchecker.total_skill_lists') }}</span>
-              <span class="info-box-number">{{ $skillLists->count() }}</span>
+              <span class="info-box-text">{{ trans('skillchecker::skillchecker.total_skill_plans') }}</span>
+              <span class="info-box-number">{{ $skillplans->count() }}</span>
             </div>
           </div>
         </div>
@@ -176,7 +176,7 @@
               <i class="fas fa-check"></i>
             </span>
             <div class="info-box-content">
-              <span class="info-box-text">{{ trans('skillchecker::skillchecker.completed_lists') }}</span>
+              <span class="info-box-text">{{ trans('skillchecker::skillchecker.completed_plans') }}</span>
               <span class="info-box-number">
                 @php
                   $completedCount = 0;
@@ -195,8 +195,8 @@
               <i class="fas fa-exclamation-triangle"></i>
             </span>
             <div class="info-box-content">
-              <span class="info-box-text">{{ trans('skillchecker::skillchecker.incomplete_lists') }}</span>
-              <span class="info-box-number">{{ $skillLists->count() - $completedCount }}</span>
+              <span class="info-box-text">{{ trans('skillchecker::skillchecker.incomplete_plans') }}</span>
+              <span class="info-box-number">{{ $skillplans->count() - $completedCount }}</span>
             </div>
           </div>
         </div>
@@ -226,11 +226,11 @@
     @else
       <div class="text-center py-4">
         <i class="fas fa-list-check fa-3x text-muted mb-3"></i>
-        <h4 class="text-muted">{{ trans('skillchecker::skillchecker.no_skill_lists_found') }}</h4>
-        <p class="text-muted">{{ trans('skillchecker::skillchecker.no_skill_lists_message') }}</p>
-        @can('skillchecker.skillchecker.manage_skill_lists')
-          <a href="{{ route('skillchecker.skill-lists.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> {{ trans('skillchecker::skillchecker.create_skill_list') }}
+        <h4 class="text-muted">{{ trans('skillchecker::skillchecker.no_skill_plans_found') }}</h4>
+        <p class="text-muted">{{ trans('skillchecker::skillchecker.no_skill_plans_message') }}</p>
+        @can('skillchecker.skillchecker.manage_skill_plans')
+          <a href="{{ route('skillchecker.skill-plans.create') }}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> {{ trans('skillchecker::skillchecker.create_skill_plan') }}
           </a>
         @endcan
       </div>

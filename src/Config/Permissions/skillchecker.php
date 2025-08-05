@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'manage_skill_lists' => [
-        'label' => 'skillchecker::permissions.manage_skill_lists',
-        'description' => 'skillchecker::permissions.manage_skill_lists_description',
+    'manage_skill_plans' => [
+        'label' => 'skillchecker::permissions.manage_skill_plans',
+        'description' => 'skillchecker::permissions.manage_skill_plans_description',
         'division' => 'military',
     ],
     'check_skills' => [

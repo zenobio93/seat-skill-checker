@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Seat\Eveapi\Models\Sde\InvType;
 
-class SkillListRequirement extends Model
+class SkillPlanRequirement extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'skill_list_requirements';
+    protected $table = 'skill_plan_requirements';
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +21,7 @@ class SkillListRequirement extends Model
      * @var array
      */
     protected $fillable = [
-        'skill_list_id',
+        'skill_plan_id',
         'skill_id',
         'required_level',
         'priority',
@@ -34,7 +34,7 @@ class SkillListRequirement extends Model
      * @var array
      */
     protected $casts = [
-        'skill_list_id' => 'integer',
+        'skill_plan_id' => 'integer',
         'skill_id' => 'integer',
         'required_level' => 'integer',
         'priority' => 'integer',
@@ -44,13 +44,13 @@ class SkillListRequirement extends Model
     ];
 
     /**
-     * Get the skill list this requirement belongs to.
+     * Get the skill plan this requirement belongs to.
      *
      * @return BelongsTo
      */
-    public function skillList(): BelongsTo
+    public function skillPlan(): BelongsTo
     {
-        return $this->belongsTo(SkillList::class);
+        return $this->belongsTo(SkillPlan::class);
     }
 
     /**
@@ -64,15 +64,15 @@ class SkillListRequirement extends Model
     }
 
     /**
-     * Scope to filter by skill list.
+     * Scope to filter by skill plan.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param int $skillListId
+     * @param int $skillPlanId
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForSkillList($query, int $skillListId)
+    public function scopeForSkillPlan($query, int $skillPlanId)
     {
-        return $query->where('skill_list_id', $skillListId);
+        return $query->where('skill_plan_id', $skillPlanId);
     }
 
     /**

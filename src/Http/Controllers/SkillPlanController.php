@@ -6,27 +6,27 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Seat\Web\Http\Controllers\Controller;
-use Zenobio93\Seat\SkillChecker\Models\SkillList;
-use Zenobio93\Seat\SkillChecker\Models\SkillListRequirement;
-use Zenobio93\Seat\SkillChecker\Http\DataTables\SkillListDataTable;
+use Zenobio93\Seat\SkillChecker\Models\SkillPlan;
+use Zenobio93\Seat\SkillChecker\Models\SkillPlanRequirement;
+use Zenobio93\Seat\SkillChecker\Http\DataTables\SkillPlanDataTable;
 use Seat\Eveapi\Models\Sde\InvType;
 use Seat\Eveapi\Models\Sde\InvGroup;
 
-class SkillListController extends Controller
+class SkillPlanController extends Controller
 {
     /**
-     * Display a listing of skill lists.
+     * Display a listing of skill plans.
      *
-     * @param SkillListDataTable $dataTable
+     * @param SkillPlanDataTable $dataTable
      * @return mixed
      */
-    public function index(SkillListDataTable $dataTable)
+    public function index(SkillPlanDataTable $dataTable)
     {
-        return $dataTable->render('skillchecker::skill-lists.index');
+        return $dataTable->render('skillchecker::skill-plans.index');
     }
 
     /**
-     * Show the form for creating a new skill list.
+     * Show the form for creating a new skill plan.
      *
      * @return View
      */
@@ -40,11 +40,11 @@ class SkillListController extends Controller
             ->orderBy('groupName')
             ->get();
 
-        return view('skillchecker::skill-lists.create', compact('skillGroups'));
+        return view('skillchecker::skill-plans.create', compact('skillGroups'));
     }
 
     /**
-     * Store a newly created skill list.
+     * Store a newly created skill plan.
      *
      * @param Request $request
      * @return RedirectResponse
@@ -67,11 +67,11 @@ class SkillListController extends Controller
         $skillIds = collect($request->skills)->pluck('skill_id');
         if ($skillIds->count() !== $skillIds->unique()->count()) {
             return redirect()->back()
-                ->withErrors(['skills' => 'Each skill can only be added once per skill list.'])
+                ->withErrors(['skills' => 'Each skill can only be added once per skill plan.'])
                 ->withInput();
         }
 
-        $skillList = SkillList::create([
+        $skillPlan = SkillPlan::create([
             'name' => $request->name,
             'description' => $request->description,
             'priority' => $request->priority,
@@ -80,8 +80,8 @@ class SkillListController extends Controller
         ]);
 
         foreach ($request->skills as $skill) {
-            SkillListRequirement::create([
-                'skill_list_id' => $skillList->id,
+            SkillPlanRequirement::create([
+                'skill_plan_id' => $skillPlan->id,
                 'skill_id' => $skill['skill_id'],
                 'required_level' => $skill['required_level'],
                 'priority' => $skill['priority'],
@@ -89,32 +89,32 @@ class SkillListController extends Controller
             ]);
         }
 
-        return redirect()->route('skillchecker.skill-lists.index')
-            ->with('success', trans('skillchecker::skillchecker.skill_list_created_successfully'));
+        return redirect()->route('skillchecker.skill-plans.index')
+            ->with('success', trans('skillchecker::skillchecker.skill_plan_created_successfully'));
     }
 
     /**
      * Display the specified skill list.
      *
-     * @param SkillList $skillList
+     * @param SkillPlan $skillplan
      * @return View
      */
-    public function show(SkillList $skillList): View
+    public function show(SkillPlan $skillplan): View
     {
-        $skillList->load(['creator', 'requirements.skill']);
+        $skillplan->load(['creator', 'requirements.skill']);
 
-        return view('skillchecker::skill-lists.show', compact('skillList'));
+        return view('skillchecker::skill-plans.show', compact('skillplan'));
     }
 
     /**
      * Show the form for editing the specified skill list.
      *
-     * @param SkillList $skillList
+     * @param SkillPlan $skillplan
      * @return View
      */
-    public function edit(SkillList $skillList): View
+    public function edit(SkillPlan $skillplan): View
     {
-        $skillList->load('requirements.skill');
+        $skillplan->load('requirements.skill');
         
         // Get all skill groups for the skill selector
         $skillGroups = InvGroup::whereIn('categoryID', [16]) // Skills category
@@ -124,17 +124,17 @@ class SkillListController extends Controller
             ->orderBy('groupName')
             ->get();
 
-        return view('skillchecker::skill-lists.edit', compact('skillList', 'skillGroups'));
+        return view('skillchecker::skill-plans.edit', compact('skillplan', 'skillGroups'));
     }
 
     /**
      * Update the specified skill list.
      *
      * @param Request $request
-     * @param SkillList $skillList
+     * @param SkillPlan $skillplan
      * @return RedirectResponse
      */
-    public function update(Request $request, SkillList $skillList): RedirectResponse
+    public function update(Request $request, SkillPlan $skillplan): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -156,7 +156,7 @@ class SkillListController extends Controller
                 ->withInput();
         }
 
-        $skillList->update([
+        $skillplan->update([
             'name' => $request->name,
             'description' => $request->description,
             'priority' => $request->priority,
@@ -164,11 +164,11 @@ class SkillListController extends Controller
         ]);
 
         // Remove existing requirements and add new ones
-        $skillList->requirements()->delete();
+        $skillplan->requirements()->delete();
 
         foreach ($request->skills as $skill) {
-            SkillListRequirement::create([
-                'skill_list_id' => $skillList->id,
+            SkillPlanRequirement::create([
+                'skill_plan_id' => $skillplan->id,
                 'skill_id' => $skill['skill_id'],
                 'required_level' => $skill['required_level'],
                 'priority' => $skill['priority'],
@@ -176,21 +176,21 @@ class SkillListController extends Controller
             ]);
         }
 
-        return redirect()->route('skillchecker.skill-lists.index')
-            ->with('success', trans('skillchecker::skillchecker.skill_list_updated_successfully'));
+        return redirect()->route('skillchecker.skill-plans.index')
+            ->with('success', trans('skillchecker::skillchecker.skill_plan_updated_successfully'));
     }
 
     /**
      * Remove the specified skill list.
      *
-     * @param SkillList $skillList
+     * @param SkillPlan $skillplan
      * @return RedirectResponse
      */
-    public function destroy(SkillList $skillList): RedirectResponse
+    public function destroy(SkillPlan $skillplan): RedirectResponse
     {
-        $skillList->delete();
+        $skillplan->delete();
 
-        return redirect()->route('skillchecker.skill-lists.index')
-            ->with('success', trans('skillchecker::skillchecker.skill_list_deleted_successfully'));
+        return redirect()->route('skillchecker.skill-plans.index')
+            ->with('success', trans('skillchecker::skillchecker.skill_plan_deleted_successfully'));
     }
 }

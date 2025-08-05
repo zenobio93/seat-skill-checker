@@ -7,11 +7,11 @@ return [
         'route_segment' => 'skillchecker',
         'entries'       => [
             [
-                'name'       => 'Skill Lists',
-                'label'      => 'skillchecker::sidebar.skill_lists',
+                'name'       => 'Skill Plans',
+                'label'      => 'skillchecker::sidebar.skill_plans',
                 'icon'       => 'fas fa-list',
-                'route'      => 'skillchecker.skill-lists.index',
-                'permission' => 'skillchecker.manage_skill_lists',
+                'route'      => 'skillchecker.skill-plans.index',
+                'permission' => 'skillchecker.manage_skill_plans',
             ],
             [
                 'name'       => 'Skill Checker',

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\JsonResponse;
 use Seat\Web\Http\Controllers\Controller;
-use Zenobio93\Seat\SkillChecker\Models\SkillList;
+use Zenobio93\Seat\SkillChecker\Models\SkillPlan;
 use Seat\Eveapi\Models\Character\CharacterInfo;
 use Seat\Eveapi\Models\Corporation\CorporationInfo;
 use Seat\Web\Models\Squads\Squad;
@@ -21,12 +21,12 @@ class SkillCheckerController extends Controller
      */
     public function index(): View
     {
-        $skillLists = SkillList::with('requirements')->orderBy('name')->get();
+        $skillplans = SkillPlan::with('requirements')->orderBy('name')->get();
         $squads = Squad::orderBy('name')->get();
         $corporations = CorporationInfo::orderBy('name')->get();
         $users = User::has('characters')->with('main_character')->orderBy('name')->get();
 
-        return view('skillchecker::checker.index', compact('skillLists', 'squads', 'corporations', 'users'));
+        return view('skillchecker::checker.index', compact('skillplans', 'squads', 'corporations', 'users'));
     }
 
     /**
@@ -40,10 +40,10 @@ class SkillCheckerController extends Controller
     {
         $request->validate([
             'user_id' => 'required|integer|exists:users,id',
-            'skill_list_id' => 'required|integer|exists:skill_lists,id',
+            'skill_plan_id' => 'required|integer|exists:skill_plans,id',
         ]);
 
-        $skillList = SkillList::findOrFail($request->skill_list_id);
+        $skillplan = SkillPlan::findOrFail($request->skill_plan_id);
         $user = User::with('characters', 'main_character')->findOrFail($request->user_id);
         
         $groupedResults = [];
@@ -71,7 +71,7 @@ class SkillCheckerController extends Controller
         
         // Check all characters for this user
         foreach ($user->characters as $character) {
-            $characterResults = $skillList->checkCharacterSkills($character->character_id);
+            $characterResults = $skillplan->checkCharacterSkills($character->character_id);
             $characterData = [
                 'character' => [
                     'id' => $character->character_id,
@@ -90,9 +90,9 @@ class SkillCheckerController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
             ],
-            'skill_list' => [
-                'id' => $skillList->id,
-                'name' => $skillList->name,
+            'skill_plan' => [
+                'id' => $skillplan->id,
+                'name' => $skillplan->name,
             ],
             'grouped_characters' => array_values($groupedResults),
             'summary' => $this->calculateSummary($allResults),
@@ -111,10 +111,10 @@ class SkillCheckerController extends Controller
     {
         $request->validate([
             'squad_id' => 'required|integer|exists:squads,id',
-            'skill_list_id' => 'required|integer|exists:skill_lists,id',
+            'skill_plan_id' => 'required|integer|exists:skill_plans,id',
         ]);
 
-        $skillList = SkillList::findOrFail($request->skill_list_id);
+        $skillplan = SkillPlan::findOrFail($request->skill_plan_id);
         $squad = Squad::with('members')->findOrFail($request->squad_id);
         
         $groupedResults = [];
@@ -143,7 +143,7 @@ class SkillCheckerController extends Controller
             }
 
             foreach ($userCharacters as $character) {
-                $characterResults = $skillList->checkCharacterSkills($character->character_id);
+                $characterResults = $skillplan->checkCharacterSkills($character->character_id);
                 $characterData = [
                     'character' => [
                         'id' => $character->character_id,
@@ -163,9 +163,9 @@ class SkillCheckerController extends Controller
                 'id' => $squad->id,
                 'name' => $squad->name,
             ],
-            'skill_list' => [
-                'id' => $skillList->id,
-                'name' => $skillList->name,
+            'skill_plan' => [
+                'id' => $skillplan->id,
+                'name' => $skillplan->name,
             ],
             'grouped_characters' => array_values($groupedResults),
             'summary' => $this->calculateSummary($allResults),
@@ -182,10 +182,10 @@ class SkillCheckerController extends Controller
     {
         $request->validate([
             'corporation_id' => 'required|integer|exists:corporation_infos,corporation_id',
-            'skill_list_id' => 'required|integer|exists:skill_lists,id',
+            'skill_plan_id' => 'required|integer|exists:skill_plans,id',
         ]);
 
-        $skillList = SkillList::findOrFail($request->skill_list_id);
+        $skillplan = SkillPlan::findOrFail($request->skill_plan_id);
         $corporation = CorporationInfo::findOrFail($request->corporation_id);
 
         $groupedResults = [];
@@ -213,7 +213,7 @@ class SkillCheckerController extends Controller
                 ];
             }
 
-            $characterResults = $skillList->checkCharacterSkills($character->character_id);
+            $characterResults = $skillplan->checkCharacterSkills($character->character_id);
             $characterData = [
                 'character' => [
                     'id' => $character->character_id,
@@ -232,9 +232,9 @@ class SkillCheckerController extends Controller
                 'id' => $corporation->corporation_id,
                 'name' => $corporation->name,
             ],
-            'skill_list' => [
-                'id' => $skillList->id,
-                'name' => $skillList->name,
+            'skill_plan' => [
+                'id' => $skillplan->id,
+                'name' => $skillplan->name,
             ],
             'grouped_characters' => array_values($groupedResults),
             'summary' => $this->calculateSummary($allResults),

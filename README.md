@@ -87,7 +87,7 @@ php artisan seat:cache:clear
 
 The plugin uses SeAT's permission system with the following permissions:
 
-- `skillchecker.manage_skill_lists`: Create, edit, and delete skill lists
+- `skillchecker.manage_skill_plans`: Create, edit, and delete skill lists
 - `skillchecker.check_skills`: Access the skill checker interface
 - `character.skillchecker_skillcheck`: View skill checks in character sheets
 
@@ -95,8 +95,8 @@ The plugin uses SeAT's permission system with the following permissions:
 
 The plugin creates two main tables:
 
-- `skill_lists`: Stores skill list information (name, description, creator)
-- `skill_list_requirements`: Stores individual skill requirements with levels
+- `skill_plans`: Stores skill list information (name, description, creator)
+- `skill_plan_requirements`: Stores individual skill requirements with levels
 
 ## API Integration
 
@@ -122,12 +122,12 @@ src/
 
 ### Key Models
 
-- `SkillList`: Manages skill list data and character skill checking logic
-- `SkillListRequirement`: Handles individual skill requirements within lists
+- `SkillPlan`: Manages skill plan data and character skill checking logic
+- `SkillPlanRequirement`: Handles individual skill requirements within plans
 
 ### Key Controllers
 
-- `SkillListController`: CRUD operations for skill lists
+- `SkillPlanController`: CRUD operations for skill plans
 - `SkillCheckerController`: Skill checking functionality for users, squads, and corporations
 - `CharacterController`: Character sheet integration
 

@@ -1,16 +1,16 @@
 @extends('web::layouts.grids.12')
 
-@section('title', trans('skillchecker::skillchecker.create_skill_list'))
-@section('page_header', trans('skillchecker::skillchecker.create_skill_list'))
+@section('title', trans('skillchecker::skillchecker.create_skill_plan'))
+@section('page_header', trans('skillchecker::skillchecker.create_skill_plan'))
 
 @section('full')
 
 <div class="card">
   <div class="card-header">
-    <h3 class="card-title">{{ trans('skillchecker::skillchecker.create_new_skill_list') }}</h3>
+    <h3 class="card-title">{{ trans('skillchecker::skillchecker.create_new_skill_plan') }}</h3>
   </div>
 
-  <form action="{{ route('skillchecker.skill-lists.store') }}" method="POST" id="skill-list-form">
+  <form action="{{ route('skillchecker.skill-plans.store') }}" method="POST" id="skill-list-form">
     @csrf
     
     <div class="card-body">
@@ -81,7 +81,7 @@
       <button type="submit" class="btn btn-primary">
         <i class="fas fa-save"></i> {{ trans('skillchecker::skillchecker.save') }}
       </button>
-      <a href="{{ route('skillchecker.skill-lists.index') }}" class="btn btn-secondary">
+      <a href="{{ route('skillchecker.skill-plans.index') }}" class="btn btn-secondary">
         <i class="fas fa-times"></i> {{ trans('skillchecker::skillchecker.cancel') }}
       </a>
     </div>

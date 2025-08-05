@@ -2,6 +2,6 @@
 
 return [
     'skillchecker' => 'Skill Checker',
-    'skill_lists' => 'Skill Lists',
+    'skill_plans' => 'Skill Plans',
     'skill_checker' => 'Skill Checker',
 ];
