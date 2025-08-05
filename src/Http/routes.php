@@ -38,6 +38,16 @@ Route::group([
         Route::post('/check-character', [SkillCheckerController::class, 'checkCharacter'])->name('skillchecker.checker.check-character');
         Route::post('/check-squad', [SkillCheckerController::class, 'checkSquad'])->name('skillchecker.checker.check-squad');
         Route::post('/check-corporation', [SkillCheckerController::class, 'checkCorporation'])->name('skillchecker.checker.check-corporation');
+        
+        // Lookup routes for autocomplete
+        Route::group([
+            'prefix' => 'lookup',
+        ], function () {
+            Route::get('users', [SkillCheckerController::class, 'lookupUsers'])->name('skillchecker.checker.lookup.users');
+            Route::get('squads', [SkillCheckerController::class, 'lookupSquads'])->name('skillchecker.checker.lookup.squads');
+            Route::get('corporations', [SkillCheckerController::class, 'lookupCorporations'])->name('skillchecker.checker.lookup.corporations');
+            Route::get('skill-plans', [SkillCheckerController::class, 'lookupSkillPlans'])->name('skillchecker.checker.lookup.skill-plans');
+        });
     });
 
 });

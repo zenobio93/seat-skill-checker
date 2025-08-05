@@ -21,12 +21,8 @@ class SkillCheckerController extends Controller
      */
     public function index(): View
     {
-        $skillplans = SkillPlan::with('requirements')->orderBy('name')->get();
-        $squads = Squad::orderBy('name')->get();
-        $corporations = CorporationInfo::orderBy('name')->get();
-        $users = User::has('characters')->with('main_character')->orderBy('name')->get();
-
-        return view('skillchecker::checker.index', compact('skillplans', 'squads', 'corporations', 'users'));
+        // No need to load data upfront since autocomplete will fetch it dynamically
+        return view('skillchecker::checker.index');
     }
 
     /**
@@ -274,5 +270,83 @@ class SkillCheckerController extends Controller
             'percentage_meeting_all' => $totalCharacters > 0 ? round(($charactersMeetingAll / $totalCharacters) * 100, 2) : 0,
             'average_completion' => $totalCharacters > 0 ? round($totalCompletion / $totalCharacters, 2) : 0,
         ];
+    }
+
+    /**
+     * Lookup users for autocomplete.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function lookupUsers(Request $request): JsonResponse
+    {
+        $users = User::has('characters')
+            ->with('main_character')
+            ->where('name', 'LIKE', '%'.$request->query('q', '').'%')
+            ->take(10)
+            ->get()
+            ->map(fn($user): array => [
+                'id' => $user->id,
+                'text' => $user->name,
+            ]);
+
+        return response()->json(['results' => $users]);
+    }
+
+    /**
+     * Lookup squads for autocomplete.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function lookupSquads(Request $request): JsonResponse
+    {
+        $squads = Squad::where('name', 'LIKE', '%'.$request->query('q', '').'%')
+            ->take(10)
+            ->get()
+            ->map(fn($squad): array => [
+                'id' => $squad->id,
+                'text' => $squad->name,
+            ]);
+
+        return response()->json(['results' => $squads]);
+    }
+
+    /**
+     * Lookup corporations for autocomplete.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function lookupCorporations(Request $request): JsonResponse
+    {
+        $corporations = CorporationInfo::where('name', 'LIKE', '%'.$request->query('q', '').'%')
+            ->take(10)
+            ->get()
+            ->map(fn($corporation): array => [
+                'id' => $corporation->corporation_id,
+                'text' => $corporation->name,
+            ]);
+
+        return response()->json(['results' => $corporations]);
+    }
+
+    /**
+     * Lookup skill plans for autocomplete.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function lookupSkillPlans(Request $request): JsonResponse
+    {
+        $skillplans = SkillPlan::where('name', 'LIKE', '%'.$request->query('q', '').'%')
+            ->take(10)
+            ->get()
+            ->map(fn($skillplan): array => [
+                'id' => $skillplan->id,
+                'text' => $skillplan->name,
+            ]);
+
+        return response()->json(['results' => $skillplans]);
     }
 }

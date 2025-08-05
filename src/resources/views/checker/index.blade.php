@@ -20,11 +20,8 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="user-select">{{ trans('skillchecker::skillchecker.select_user') }}</label>
-                <select class="form-control filter-select" id="user-select" name="user_id" data-type="user">
+                <select name="user_id" id="user-select" class="form-control filter-select" data-type="user">
                   <option value="">{{ trans('skillchecker::skillchecker.select_user') }}</option>
-                  @foreach($users as $user)
-                    <option value="{{ $user->id }}">{{ $user->name }} ({{ $user->main_character ? $user->main_character->name : 'No Main Character' }})</option>
-                  @endforeach
                 </select>
               </div>
             </div>
@@ -32,11 +29,8 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="squad-select">{{ trans('skillchecker::skillchecker.select_squad') }}</label>
-                <select class="form-control filter-select" id="squad-select" name="squad_id" data-type="squad">
+                <select name="squad_id" id="squad-select" class="form-control filter-select" data-type="squad">
                   <option value="">{{ trans('skillchecker::skillchecker.select_squad') }}</option>
-                  @foreach($squads as $squad)
-                    <option value="{{ $squad->id }}">{{ $squad->name }}</option>
-                  @endforeach
                 </select>
               </div>
             </div>
@@ -44,24 +38,18 @@
             <div class="col-md-3">
               <div class="form-group">
                 <label for="corporation-select">{{ trans('skillchecker::skillchecker.select_corporation') }}</label>
-                <select class="form-control filter-select" id="corporation-select" name="corporation_id" data-type="corporation">
+                <select name="corporation_id" id="corporation-select" class="form-control filter-select" data-type="corporation">
                   <option value="">{{ trans('skillchecker::skillchecker.select_corporation') }}</option>
-                  @foreach($corporations as $corporation)
-                    <option value="{{ $corporation->corporation_id }}">{{ $corporation->name }}</option>
-                  @endforeach
                 </select>
               </div>
             </div>
             
-            <!-- Skill List Selection -->
+            <!-- Skill Plan Selection -->
             <div class="col-md-3">
               <div class="form-group">
-                <label for="skill-list-select">{{ trans('skillchecker::skillchecker.select_skill_plan') }}</label>
-                <select class="form-control" id="skill-list-select" name="skill_plan_id" required>
+                <label for="skill-plan-select">{{ trans('skillchecker::skillchecker.select_skill_plan') }}</label>
+                <select name="skill_plan_id" id="skill-plan-select" class="form-control" required>
                   <option value="">{{ trans('skillchecker::skillchecker.select_skill_plan') }}</option>
-                  @foreach($skillplans as $skillplan)
-                    <option value="{{ $skillplan->id }}">{{ $skillplan->name }}</option>
-                  @endforeach
                 </select>
               </div>
             </div>
@@ -106,10 +94,47 @@
 @push('javascript')
 <script>
 $(document).ready(function() {
+    // Initialize Select2 for all filter selects
+    $('#user-select').select2({
+        ajax: {
+            url: '{{ route("skillchecker.checker.lookup.users") }}',
+            dataType: 'json',
+            cache: true
+        },
+        minimumInputLength: 2
+    });
+
+    $('#squad-select').select2({
+        ajax: {
+            url: '{{ route("skillchecker.checker.lookup.squads") }}',
+            dataType: 'json',
+            cache: true
+        },
+        minimumInputLength: 2
+    });
+
+    $('#corporation-select').select2({
+        ajax: {
+            url: '{{ route("skillchecker.checker.lookup.corporations") }}',
+            dataType: 'json',
+            cache: true
+        },
+        minimumInputLength: 2
+    });
+
+    $('#skill-plan-select').select2({
+        ajax: {
+            url: '{{ route("skillchecker.checker.lookup.skill-plans") }}',
+            dataType: 'json',
+            cache: true
+        },
+        minimumInputLength: 2
+    });
+
     // Filter reset functionality - when one filter is selected, clear others
     $('.filter-select').change(function() {
         if ($(this).val()) {
-            $('.filter-select').not(this).val('');
+            $('.filter-select').not(this).val('').trigger('change');
         }
     });
 
@@ -120,7 +145,7 @@ $(document).ready(function() {
         const userId = $('#user-select').val();
         const squadId = $('#squad-select').val();
         const corporationId = $('#corporation-select').val();
-        const skillplanId = $('#skill-list-select').val();
+        const skillplanId = $('#skill-plan-select').val();
         
         // Validate that a skill list is selected
         if (!skillplanId) {
