@@ -24,7 +24,7 @@
     }
   },
   "require": {
-    "php": "^8.3",
+    "php": "^8.2",
     "eveseat/services": "^5.0",
     "eveseat/eveapi": "^5.0",
     "eveseat/web": "^5.0",
