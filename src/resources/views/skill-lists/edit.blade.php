@@ -107,33 +107,24 @@ $(document).ready(function() {
         addSkillRow({{ $requirement->skill_id }}, '{{ $requirement->skill->typeName ?? "Unknown Skill" }}', {{ $requirement->required_level }});
     @endforeach
     
+    // Initialize modal states after loading existing skills
+    updateModalSkillStates();
+    
     // Add skill button
     $('#add-skill-btn').click(function() {
+        updateModalSkillStates();
         $('#skill-modal').modal('show');
     });
     
     // Skill selection
-    $('.skill-link').click(function(e) {
+    $(document).on('click', '.skill-link:not(.disabled)', function(e) {
         e.preventDefault();
         const skillId = $(this).parent().data('skill-id');
         const skillName = $(this).parent().data('skill-name');
         
-        // Check if skill already exists
-        let exists = false;
-        $('input[name*="[skill_id]"]').each(function() {
-            if ($(this).val() == skillId) {
-                exists = true;
-                return false;
-            }
-        });
-        
-        if (exists) {
-            alert('This skill is already added to the list.');
-            return;
-        }
-        
         addSkillRow(skillId, skillName);
         $('#skill-modal').modal('hide');
+        updateModalSkillStates();
     });
     
     // Search functionality
@@ -182,7 +173,33 @@ $(document).ready(function() {
     // Remove skill
     $(document).on('click', '.remove-skill', function() {
         $(this).closest('.skill-row').remove();
+        updateModalSkillStates();
     });
+    
+    // Update modal skill states (disable already added skills)
+    function updateModalSkillStates() {
+        const addedSkillIds = [];
+        $('input[name*="[skill_id]"]').each(function() {
+            addedSkillIds.push($(this).val());
+        });
+        
+        $('.skill-item').each(function() {
+            const skillId = $(this).data('skill-id').toString();
+            const skillLink = $(this).find('.skill-link');
+            
+            // Remove existing hint first
+            $(this).find('small').remove();
+            
+            if (addedSkillIds.includes(skillId)) {
+                skillLink.addClass('disabled text-muted');
+                skillLink.css('pointer-events', 'none');
+                $(this).append('<small class="text-muted ml-2">(Already added)</small>');
+            } else {
+                skillLink.removeClass('disabled text-muted');
+                skillLink.css('pointer-events', 'auto');
+            }
+        });
+    }
     
     // Form validation
     $('#skill-list-form').submit(function(e) {

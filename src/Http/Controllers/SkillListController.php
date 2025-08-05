@@ -59,6 +59,14 @@ class SkillListController extends Controller
             'skills.*.required_level' => 'required|integer|min:1|max:5',
         ]);
 
+        // Check for duplicate skills in the request
+        $skillIds = collect($request->skills)->pluck('skill_id');
+        if ($skillIds->count() !== $skillIds->unique()->count()) {
+            return redirect()->back()
+                ->withErrors(['skills' => 'Each skill can only be added once per skill list.'])
+                ->withInput();
+        }
+
         $skillList = SkillList::create([
             'name' => $request->name,
             'description' => $request->description,
@@ -127,6 +135,14 @@ class SkillListController extends Controller
             'skills.*.skill_id' => 'required|integer|exists:invTypes,typeID',
             'skills.*.required_level' => 'required|integer|min:1|max:5',
         ]);
+
+        // Check for duplicate skills in the request
+        $skillIds = collect($request->skills)->pluck('skill_id');
+        if ($skillIds->count() !== $skillIds->unique()->count()) {
+            return redirect()->back()
+                ->withErrors(['skills' => 'Each skill can only be added once per skill list.'])
+                ->withInput();
+        }
 
         $skillList->update([
             'name' => $request->name,
