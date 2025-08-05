@@ -9,6 +9,9 @@
   <div class="card-header">
     <h3 class="card-title">{{ $skillplan->name }}</h3>
     <div class="card-tools">
+      <button type="button" class="btn btn-info btn-sm me-2" onclick="copyToClipboard({{ $skillplan->id }})">
+        <i class="fas fa-copy"></i> {{ trans('skillchecker::skillchecker.copy_to_clipboard') }}
+      </button>
       @can('skillchecker.manage_skill_plans')
         <a href="{{ route('skillchecker.skill-plans.import-update', $skillplan) }}" class="btn btn-success btn-sm me-2">
           <i class="fas fa-upload"></i> {{ trans('skillchecker::skillchecker.update_by_import') }}
@@ -145,5 +148,77 @@
   </div>
 </div>
 @endcan
+
+<script>
+function copyToClipboard(skillPlanId) {
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+    
+    // Show loading state
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ trans("skillchecker::skillchecker.copying") }}...';
+    button.disabled = true;
+    
+    // Make AJAX request to get clipboard content
+    fetch(`{{ route('skillchecker.skill-plans.copy-eve', '') }}/${skillPlanId}?clipboard=1`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Copy to clipboard
+            navigator.clipboard.writeText(data.content).then(() => {
+                // Show success state
+                button.innerHTML = '<i class="fas fa-check"></i> {{ trans("skillchecker::skillchecker.copied_to_clipboard") }}';
+                button.classList.remove('btn-info');
+                button.classList.add('btn-success');
+                
+                // Show toast notification
+                if (typeof toastr !== 'undefined') {
+                    toastr.success(data.message);
+                }
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-info');
+                    button.disabled = false;
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy to clipboard:', err);
+                showCopyError(button, originalText);
+            });
+        } else {
+            showCopyError(button, originalText);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showCopyError(button, originalText);
+    });
+}
+
+function showCopyError(button, originalText) {
+    button.innerHTML = '<i class="fas fa-exclamation-triangle"></i> {{ trans("skillchecker::skillchecker.copy_failed") }}';
+    button.classList.remove('btn-info');
+    button.classList.add('btn-danger');
+    
+    if (typeof toastr !== 'undefined') {
+        toastr.error('{{ trans("skillchecker::skillchecker.copy_failed") }}');
+    }
+    
+    setTimeout(() => {
+        button.innerHTML = originalText;
+        button.classList.remove('btn-danger');
+        button.classList.add('btn-info');
+        button.disabled = false;
+    }, 3000);
+}
+</script>
 
 @endsection

@@ -91,6 +91,11 @@ return array(
     // Buttons
     'view' => 'View',
     'copy' => 'Copy',
+    'copy_for_eve' => 'Copy for EVE Online',
+    'copy_to_clipboard' => 'Copy to Clipboard',
+    'copying' => 'Copying',
+    'copied_to_clipboard' => 'Skill plan copied to clipboard!',
+    'copy_failed' => 'Failed to copy to clipboard. Please try again.',
     'edit' => 'Edit',
     'delete' => 'Delete',
     'save' => 'Save',

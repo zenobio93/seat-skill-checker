@@ -141,6 +141,41 @@ class SkillPlanController extends Controller
     }
 
     /**
+     * Generate EVE Online import format for clipboard copy.
+     *
+     * @param SkillPlan $skillplan
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function copyForEve(SkillPlan $skillplan, Request $request)
+    {
+        $skillplan->load('requirements.skill');
+
+        $eveFormat = [];
+        
+        // Sort requirements by priority
+        $requirements = $skillplan->requirements->sortBy('priority');
+        
+        foreach ($requirements as $requirement) {
+            $skillName = $requirement->skill->typeName ?? 'Unknown Skill';
+            $requiredLevel = $requirement->required_level;
+            
+            // Add each level from 1 to required level
+            for ($level = 1; $level <= $requiredLevel; $level++) {
+                $eveFormat[] = $skillName . ' ' . $level;
+            }
+        }
+        
+        $content = implode("\n", $eveFormat);
+        
+        return response()->json([
+            'success' => true,
+            'content' => $content,
+            'message' => trans('skillchecker::skillchecker.copied_to_clipboard')
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified skill list.
      *
      * @param SkillPlan $skillplan
