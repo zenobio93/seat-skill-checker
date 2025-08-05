@@ -9,7 +9,10 @@
   <div class="card-header">
     <h3 class="card-title">{{ $skillplan->name }}</h3>
     <div class="card-tools">
-      @can('skillchecker.skillchecker.manage_skill_plans')
+      @can('skillchecker.manage_skill_plans')
+        <a href="{{ route('skillchecker.skill-plans.import-update', $skillplan) }}" class="btn btn-success btn-sm me-2">
+          <i class="fas fa-upload"></i> {{ trans('skillchecker::skillchecker.update_by_import') }}
+        </a>
         <a href="{{ route('skillchecker.skill-plans.edit', $skillplan) }}" class="btn btn-warning btn-sm">
           <i class="fas fa-edit"></i> {{ trans('skillchecker::skillchecker.edit') }}
         </a>
@@ -98,7 +101,7 @@
   <div class="card-footer">
     <div class="row">
       <div class="col-md-6">
-        @can('skillchecker.skillchecker.manage_skill_plans')
+        @can('skillchecker.manage_skill_plans')
           <a href="{{ route('skillchecker.skill-plans.edit', $skillplan) }}" class="btn btn-warning">
             <i class="fas fa-edit"></i> {{ trans('skillchecker::skillchecker.edit') }}
           </a>
@@ -112,7 +115,7 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-@can('skillchecker.skillchecker.manage_skill_plans')
+@can('skillchecker.manage_skill_plans')
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">

@@ -10,6 +10,9 @@ return array(
     'edit_skill_plan' => 'Edit Skill Plan',
     'view_skill_plan' => 'View Skill Plan',
     'delete_skill_plan' => 'Delete Skill Plan',
+    'import_skill_plan' => 'Import new Skill Plan',
+    'update_skill_plan_by_import' => 'Update Skill Plan by Import',
+    'update_by_import' => 'Update by Import',
     
     // Table headers
     'name' => 'Name',
@@ -68,6 +71,22 @@ return array(
     'required_skills' => 'Required Skills',
     'optional_skills' => 'Optional Skills',
     
+    // Import
+    'skill_data' => 'Skill Data',
+    'import_data_placeholder' => 'Paste your skill data here...',
+    'line_by_line_example' => 'Line by Line Example',
+    'json_example' => 'JSON Example',
+    'import' => 'Import',
+    'update_mode' => 'Update Mode',
+    'select_update_mode' => 'Select Update Mode',
+    'replace_mode' => 'Replace Mode',
+    'merge_mode' => 'Merge Mode',
+    'replace_mode_help' => 'Replace all existing skills with imported skills',
+    'merge_mode_help' => 'Keep existing skills and add/update with imported skills (higher levels only)',
+    'update_import_info' => 'You can update this skill plan by importing new skills. Choose replace mode to completely replace existing skills, or merge mode to add new skills and update existing ones with higher levels.',
+    'current_skills' => 'Current Skills',
+    'no_skills_defined' => 'No skills currently defined in this skill plan.',
+
     // Buttons
     'view' => 'View',
     'copy' => 'Copy',

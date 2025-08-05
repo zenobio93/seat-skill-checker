@@ -18,7 +18,11 @@ Route::group([
         Route::get('/', [SkillPlanController::class, 'index'])->name('skillchecker.skill-plans.index');
         Route::get('/create', [SkillPlanController::class, 'create'])->name('skillchecker.skill-plans.create');
         Route::post('/', [SkillPlanController::class, 'store'])->name('skillchecker.skill-plans.store');
+        Route::get('/import', [SkillPlanController::class, 'import'])->name('skillchecker.skill-plans.import');
+        Route::post('/import', [SkillPlanController::class, 'processImport'])->name('skillchecker.skill-plans.process-import');
         Route::get('/{skillplan}', [SkillPlanController::class, 'show'])->name('skillchecker.skill-plans.show');
+        Route::get('/{skillplan}/import', [SkillPlanController::class, 'importUpdate'])->name('skillchecker.skill-plans.import-update');
+        Route::post('/{skillplan}/import', [SkillPlanController::class, 'processImportUpdate'])->name('skillchecker.skill-plans.process-import-update');
         Route::get('/{skillplan}/copy', [SkillPlanController::class, 'copy'])->name('skillchecker.skill-plans.copy');
         Route::get('/{skillplan}/edit', [SkillPlanController::class, 'edit'])->name('skillchecker.skill-plans.edit');
         Route::put('/{skillplan}', [SkillPlanController::class, 'update'])->name('skillchecker.skill-plans.update');

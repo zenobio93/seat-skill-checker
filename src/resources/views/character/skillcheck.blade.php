@@ -228,7 +228,7 @@
         <i class="fas fa-list-check fa-3x text-muted mb-3"></i>
         <h4 class="text-muted">{{ trans('skillchecker::skillchecker.no_skill_plans_found') }}</h4>
         <p class="text-muted">{{ trans('skillchecker::skillchecker.no_skill_plans_message') }}</p>
-        @can('skillchecker.skillchecker.manage_skill_plans')
+        @can('skillchecker.manage_skill_plans')
           <a href="{{ route('skillchecker.skill-plans.create') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> {{ trans('skillchecker::skillchecker.create_skill_plan') }}
           </a>
