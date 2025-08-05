@@ -1,6 +1,6 @@
 # SeAT Skill Checker
 
-A comprehensive skill management plugin for [SeAT](https://github.com/eveseat/seat) that allows you to create skill lists and check character skills against requirements for individuals, squads, and corporations.
+A comprehensive skill management plugin for [SeAT](https://github.com/eveseat/seat) that allows you to create skill plans and check character skills against requirements for individuals, squads, and corporations.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/zenobio93/seat-skill-checker?style=for-the-badge)](https://packagist.org/packages/zenobio93/seat-skill-checker)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg?style=for-the-badge)](https://raw.githubusercontent.com/zenobio93/seat-skill-checker/main/LICENSE)
@@ -8,21 +8,21 @@ A comprehensive skill management plugin for [SeAT](https://github.com/eveseat/se
 
 ## Features
 
-- **Skill List Management**: Create and manage custom skill lists with required skill levels
-- **Individual Character Checking**: Check any character's skills against skill lists
+- **Skill Plan Management**: Create and manage custom skill plans with required skill levels
+- **Individual Character Checking**: Check any character's skills against skill plans
 - **User-based Checking**: Check all characters belonging to a user (grouped by main character)
 - **Squad Skill Checking**: Analyze skill compliance across entire squads
 - **Corporation Analysis**: Check skill requirements for all corporation members
 - **Character Sheet Integration**: View skill check results directly in character sheets
 - **Real-time Results**: Dynamic skill checking with detailed completion percentages
-- **Permission System**: Granular permissions for managing skill lists and checking skills
+- **Permission System**: Granular permissions for managing skill plans and checking skills
 
 ## Installation
 
 ### Requirements
 
 - SeAT 5.0.x
-- PHP 8.3+
+- PHP 8.2+
 - EVE Online ESI data (automatically handled by SeAT)
 
 ### Quick Installation
@@ -48,46 +48,46 @@ php artisan seat:cache:clear
 
 ## Usage
 
-### Creating Skill Lists
+### Creating Skill Plans
 
-1. Navigate to **Skill Checker > Skill Lists** in the SeAT sidebar
-2. Click **Create New Skill List**
+1. Navigate to **Skill Checker > Skill Plans** in the SeAT sidebar
+2. Click **Create New Skill Plan**
 3. Enter a name and optional description
 4. Add skills by clicking **Add Skill** and selecting from the modal
 5. Set required levels (I-V) for each skill
-6. Save the skill list
+6. Save the skill plan
 
 ### Checking Skills
 
 #### Individual User Checking
 1. Go to **Skill Checker > Skill Checker**
 2. Select a user from the dropdown
-3. Choose a skill list to check against
+3. Choose a skill plan to check against
 4. Click **Check** to see results grouped by main character
 
 #### Squad Analysis
 1. Select a squad from the dropdown
-2. Choose a skill list
+2. Choose a skill plan
 3. Results show all characters belonging to squad members, grouped by main character
 4. View summary statistics including completion percentages
 
 #### Corporation Analysis
 1. Select a corporation from the dropdown
-2. Choose a skill list
+2. Choose a skill plan
 3. Analyze all corporation members' skills
 4. Results are grouped by main character for better organization
 
 #### Character Sheet Integration
 - Navigate to any character sheet
 - Click the **Skillcheck** tab
-- View all skill lists and their completion status for that character
-- Expand individual skill lists to see detailed requirements
+- View all skill plans and their completion status for that character
+- Expand individual skill plans to see detailed requirements
 
 ### Permissions
 
 The plugin uses SeAT's permission system with the following permissions:
 
-- `skillchecker.manage_skill_plans`: Create, edit, and delete skill lists
+- `skillchecker.manage_skill_plans`: Create, edit, and delete skill plans
 - `skillchecker.check_skills`: Access the skill checker interface
 - `character.skillchecker_skillcheck`: View skill checks in character sheets
 
@@ -95,7 +95,7 @@ The plugin uses SeAT's permission system with the following permissions:
 
 The plugin creates two main tables:
 
-- `skill_plans`: Stores skill list information (name, description, creator)
+- `skill_plans`: Stores skill plan information (name, description, creator)
 - `skill_plan_requirements`: Stores individual skill requirements with levels
 
 ## API Integration
@@ -153,7 +153,7 @@ This plugin is licensed under the [GNU General Public License v3.0](LICENSE).
 
 ### Version 1.0.0
 - Initial release
-- Skill list management
+- Skill plan management
 - Character, squad, and corporation skill checking
 - Character sheet integration
 - Permission system integration
