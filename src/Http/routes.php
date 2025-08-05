@@ -19,6 +19,7 @@ Route::group([
         Route::get('/create', [SkillPlanController::class, 'create'])->name('skillchecker.skill-plans.create');
         Route::post('/', [SkillPlanController::class, 'store'])->name('skillchecker.skill-plans.store');
         Route::get('/{skillplan}', [SkillPlanController::class, 'show'])->name('skillchecker.skill-plans.show');
+        Route::get('/{skillplan}/copy', [SkillPlanController::class, 'copy'])->name('skillchecker.skill-plans.copy');
         Route::get('/{skillplan}/edit', [SkillPlanController::class, 'edit'])->name('skillchecker.skill-plans.edit');
         Route::put('/{skillplan}', [SkillPlanController::class, 'update'])->name('skillchecker.skill-plans.update');
         Route::delete('/{skillplan}', [SkillPlanController::class, 'destroy'])->name('skillchecker.skill-plans.destroy');

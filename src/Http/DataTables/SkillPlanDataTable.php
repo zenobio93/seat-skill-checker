@@ -51,8 +51,12 @@ class SkillPlanDataTable extends DataTable
                 $actions .= '<a href="' . route('skillchecker.skill-plans.show', $row) . '" class="btn btn-sm btn-info" title="' . trans('skillchecker::skillchecker.view') . '">';
                 $actions .= '<i class="fas fa-eye"></i></a>';
                 
-                // Edit button (with permission check)
+                // Copy button (with permission check)
                 if (auth()->user()->can('skillchecker.manage_skill_plans')) {
+                    $actions .= '<a href="' . route('skillchecker.skill-plans.copy', $row) . '" class="btn btn-sm btn-success" title="' . trans('skillchecker::skillchecker.copy') . '">';
+                    $actions .= '<i class="fas fa-copy"></i></a>';
+                    
+                    // Edit button
                     $actions .= '<a href="' . route('skillchecker.skill-plans.edit', $row) . '" class="btn btn-sm btn-warning" title="' . trans('skillchecker::skillchecker.edit') . '">';
                     $actions .= '<i class="fas fa-edit"></i></a>';
                     

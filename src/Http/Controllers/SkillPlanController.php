@@ -40,7 +40,10 @@ class SkillPlanController extends Controller
             ->orderBy('groupName')
             ->get();
 
-        return view('skillchecker::skill-plans.create', compact('skillGroups'));
+        // Check if we have copy data from session
+        $copyData = session('copy_data', null);
+
+        return view('skillchecker::skill-plans.create', compact('skillGroups', 'copyData'));
     }
 
     /**
@@ -104,6 +107,37 @@ class SkillPlanController extends Controller
         $skillplan->load(['creator', 'requirements.skill']);
 
         return view('skillchecker::skill-plans.show', compact('skillplan'));
+    }
+
+    /**
+     * Copy an existing skill plan to create a new one.
+     *
+     * @param SkillPlan $skillplan
+     * @return RedirectResponse
+     */
+    public function copy(SkillPlan $skillplan): RedirectResponse
+    {
+        $skillplan->load('requirements.skill');
+
+        // Prepare the skill plan data for copying
+        $copyData = [
+            'name' => 'Copy of ' . $skillplan->name,
+            'description' => $skillplan->description,
+            'priority' => $skillplan->priority,
+            'is_required' => $skillplan->is_required,
+            'skills' => $skillplan->requirements->map(function ($requirement) {
+                return [
+                    'skill_id' => $requirement->skill_id,
+                    'required_level' => $requirement->required_level,
+                    'priority' => $requirement->priority,
+                    'is_required' => $requirement->is_required,
+                ];
+            })->toArray(),
+        ];
+
+        // Redirect to create form with prefilled data
+        return redirect()->route('skillchecker.skill-plans.create')
+            ->with('copy_data', $copyData);
     }
 
     /**

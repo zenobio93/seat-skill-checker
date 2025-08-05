@@ -19,7 +19,7 @@
           <div class="form-group">
             <label for="name">{{ trans('skillchecker::skillchecker.name') }} <span class="text-danger">*</span></label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" 
-                   id="name" name="name" value="{{ old('name') }}" required>
+                   id="name" name="name" value="{{ old('name', $copyData['name'] ?? '') }}" required>
             @error('name')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -29,7 +29,7 @@
           <div class="form-group">
             <label for="priority">{{ trans('skillchecker::skillchecker.priority') }}</label>
             <input type="number" class="form-control @error('priority') is-invalid @enderror" 
-                   id="priority" name="priority" value="{{ old('priority', 1) }}" min="1">
+                   id="priority" name="priority" value="{{ old('priority', $copyData['priority'] ?? 1) }}" min="1">
             @error('priority')
               <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -42,7 +42,7 @@
               <input type="hidden" name="is_required" value="0">
               <input class="form-check-input @error('is_required') is-invalid @enderror" 
                      type="checkbox" id="is_required" name="is_required" value="1" 
-                     {{ old('is_required') ? 'checked' : '' }}>
+                     {{ old('is_required', $copyData['is_required'] ?? false) ? 'checked' : '' }}>
               <label class="form-check-label" for="is_required">
                 {{ trans('skillchecker::skillchecker.mark_as_required') }}
               </label>
@@ -57,7 +57,7 @@
       <div class="form-group">
         <label for="description">{{ trans('skillchecker::skillchecker.description') }}</label>
         <textarea class="form-control @error('description') is-invalid @enderror" 
-                  id="description" name="description" rows="3">{{ old('description') }}</textarea>
+                  id="description" name="description" rows="3">{{ old('description', $copyData['description'] ?? '') }}</textarea>
         @error('description')
           <div class="invalid-feedback">{{ $message }}</div>
         @enderror
@@ -156,6 +156,26 @@
 <script>
 $(document).ready(function() {
     let skillIndex = 0;
+    
+    // Load copy data if available
+    @if(isset($copyData) && isset($copyData['skills']))
+        const copyData = @json($copyData['skills']);
+        const skillGroups = @json($skillGroups);
+        
+        // Create a skill lookup map
+        const skillLookup = {};
+        skillGroups.forEach(group => {
+            group.types.forEach(skill => {
+                skillLookup[skill.typeID] = skill.typeName;
+            });
+        });
+        
+        // Add skills from copy data
+        copyData.forEach(skill => {
+            const skillName = skillLookup[skill.skill_id] || 'Unknown Skill';
+            addSkillRow(skill.skill_id, skillName, skill.required_level, skill.priority, skill.is_required);
+        });
+    @endif
     
     // Add skill button
     $('#add-skill-btn').click(function() {

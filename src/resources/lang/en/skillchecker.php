@@ -70,6 +70,7 @@ return array(
     
     // Buttons
     'view' => 'View',
+    'copy' => 'Copy',
     'edit' => 'Edit',
     'delete' => 'Delete',
     'save' => 'Save',
