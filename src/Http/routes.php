@@ -24,10 +24,16 @@ Route::group([
         Route::get('/{skillplan}/import', [SkillPlanController::class, 'importUpdate'])->name('skillchecker.skill-plans.import-update');
         Route::post('/{skillplan}/import', [SkillPlanController::class, 'processImportUpdate'])->name('skillchecker.skill-plans.process-import-update');
         Route::get('/{skillplan}/copy', [SkillPlanController::class, 'copy'])->name('skillchecker.skill-plans.copy');
-        Route::get('/copy-eve/{skillplan}', [SkillPlanController::class, 'copyForEve'])->name('skillchecker.skill-plans.copy-eve');
         Route::get('/{skillplan}/edit', [SkillPlanController::class, 'edit'])->name('skillchecker.skill-plans.edit');
         Route::put('/{skillplan}', [SkillPlanController::class, 'update'])->name('skillchecker.skill-plans.update');
         Route::delete('/{skillplan}', [SkillPlanController::class, 'destroy'])->name('skillchecker.skill-plans.destroy');
+    });
+
+    // Public Skill Plan Routes
+    Route::group([
+        'prefix' => 'skill-plans',
+    ], function () {
+        Route::get('/copy-eve/{skillplan}', [SkillPlanController::class, 'copyForEve'])->name('skillchecker.skill-plans.copy-eve');
     });
 
     // Skill Checker Routes
